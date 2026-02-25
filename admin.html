@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Thư Viện - Admin Dashboard</title>
+    <meta name="description" content="Bảng điều khiển quản lý thư viện trường học - Hệ thống giáo dục">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin.css">
+</head>
+
+<body>
+    <div class="admin-layout">
+        <!-- ===== SIDEBAR ===== -->
+        <aside class="admin-sidebar">
+            <div class="sidebar-header">
+                <div class="logo-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <h2>Thư Viện Trường</h2>
+                <p>Hệ thống quản lý giáo dục</p>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section-title">Điều hướng</div>
+                <a href="index.html" class="sidebar-link">
+                    <i class="fas fa-home"></i> Trang Chủ
+                </a>
+                <a href="books.html" class="sidebar-link">
+                    <i class="fas fa-book"></i> Kho Sách
+                </a>
+                <a href="admin.html" class="sidebar-link active">
+                    <i class="fas fa-chart-pie"></i> Dashboard
+                </a>
+
+                <div class="nav-section-title">Quản lý giáo dục</div>
+                <div class="sidebar-link" onclick="switchTab('dashboard')">
+                    <i class="fas fa-tachometer-alt"></i> Tổng Quan
+                </div>
+                <div class="sidebar-link" onclick="switchTab('books')">
+                    <i class="fas fa-boxes-stacked"></i> Quản Lý Sách
+                </div>
+                <div class="sidebar-link" onclick="switchTab('borrowed')">
+                    <i class="fas fa-hand-holding-heart"></i> Sách Đang Mượn
+                </div>
+                <div class="sidebar-link" onclick="switchTab('users')">
+                    <i class="fas fa-user-graduate"></i> Bạn Đọc
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-card">
+                    <div class="user-avatar" id="adminAvatar">QL</div>
+                    <div class="user-info">
+                        <h4 id="adminName">Quản Lý</h4>
+                        <span>Administrator</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ===== MAIN CONTENT ===== -->
+        <main class="admin-main">
+            <!-- Header Section -->
+            <header class="admin-header">
+                <div>
+                    <h1>🎓 Bảng Điều Khiển Giáo Dục</h1>
+                    <p>Quản lý thư viện và hoạt động đọc sách của học sinh</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-icon" onclick="openAddBookModal()" title="Thêm sách mới">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <button class="btn-icon" title="Làm mới dữ liệu" onclick="refreshAllData()">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                    <button class="btn-icon" title="Đăng xuất" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <button class="quick-action-btn primary" onclick="openAddBookModal()">
+                    <i class="fas fa-plus-circle"></i> Thêm Sách Mới
+                </button>
+                <button class="quick-action-btn secondary" onclick="switchTab('borrowed')">
+                    <i class="fas fa-clipboard-check"></i> Xem Sách Đang Mượn
+                </button>
+                <button class="quick-action-btn secondary" onclick="exportData()">
+                    <i class="fas fa-download"></i> Xuất Báo Cáo
+                </button>
+            </div>
+
+            <!-- ===== STATS SECTION ===== -->
+            <section class="stats-grid" aria-label="Thống kê tổng quan">
+                <div class="stat-card stat-total">
+                    <div class="stat-icon">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Tổng Số Sách</h3>
+                        <div class="stat-number" id="statTotal">0</div>
+                        <div class="stat-change positive">
+                            <i class="fas fa-arrow-up"></i> Kho sách đầy đủ
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card stat-borrowed">
+                    <div class="stat-icon">
+                        <i class="fas fa-hand-holding"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Đang Cho Mượn</h3>
+                        <div class="stat-number" id="statBorrowed">0</div>
+                        <div class="stat-change">
+                            <i class="fas fa-clock"></i> Đang lưu hành
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card stat-available">
+                    <div class="stat-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Còn Trong Kho</h3>
+                        <div class="stat-number" id="statAvailable">0</div>
+                        <div class="stat-change positive">
+                            <i class="fas fa-box"></i> Sẵn sàng cho mượn
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card stat-users">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Bạn Đọc</h3>
+                        <div class="stat-number" id="statUsers">0</div>
+                        <div class="stat-change positive">
+                            <i class="fas fa-graduation-cap"></i> Học sinh tích cực
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===== TABS NAVIGATION ===== -->
+            <nav class="admin-tabs" role="tablist">
+                <button class="tab-btn active" onclick="switchTab('dashboard')" role="tab">
+                    <i class="fas fa-chart-line"></i> Tổng Quan
+                </button>
+                <button class="tab-btn" onclick="switchTab('books')" role="tab">
+                    <i class="fas fa-book"></i> Quản Lý Sách
+                </button>
+                <button class="tab-btn" onclick="switchTab('borrowed')" role="tab">
+                    <i class="fas fa-hand-holding-heart"></i> Sách Đang Mượn
+                </button>
+                <button class="tab-btn" onclick="switchTab('users')" role="tab">
+                    <i class="fas fa-user-graduate"></i> Bạn Đọc
+                </button>
+            </nav>
+
+            <!-- ===== TAB: DASHBOARD OVERVIEW ===== -->
+            <div id="tab-dashboard" class="tab-content active" role="tabpanel">
+                <!-- Activity Overview -->
+                <div class="activity-overview">
+                    <article class="activity-chart">
+                        <h3><i class="fas fa-chart-area"></i> Hoạt Động 7 Ngày Qua</h3>
+                        <div class="chart-placeholder">
+                            <div style="text-align: center;">
+                                <i class="fas fa-chart-bar" style="font-size: 2.5rem; margin-bottom: 10px;"></i>
+                                <p>Biểu đồ hoạt động mượn/trả sách</p>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="top-books">
+                        <h3><i class="fas fa-trophy"></i> Top Sách Được Mượn</h3>
+                        <div id="topBooksContainer">
+                            <!-- Dynamically populated -->
+                        </div>
+                    </article>
+                </div>
+
+                <!-- Recent Activity Frame -->
+                <article class="admin-section-frame frame-reports">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <span class="icon icon-reports"><i class="fas fa-history"></i></span>
+                            Hoạt Động Gần Đây
+                        </h2>
+                        <span class="section-badge">
+                            <i class="fas fa-bell"></i> Cập nhật liên tục
+                        </span>
+                    </div>
+                    <div class="section-body">
+                        <div id="recentActivityList">
+                            <p style="color: var(--admin-text-secondary); text-align: center;">
+                                <i class="fas fa-info-circle"></i> Các hoạt động mượn/trả sách sẽ hiển thị tại đây
+                            </p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+
+            <!-- ===== TAB: BOOK MANAGEMENT ===== -->
+            <div id="tab-books" class="tab-content" role="tabpanel">
+                <article class="admin-section-frame frame-books">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <span class="icon icon-books"><i class="fas fa-book"></i></span>
+                            Quản Lý Kho Sách
+                        </h2>
+                        <span class="section-badge" id="bookCountBadge">
+                            <i class="fas fa-layer-group"></i> 0 cuốn
+                        </span>
+                    </div>
+                    <div class="section-body">
+                        <!-- Search & Filters -->
+                        <div class="search-filters">
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="searchBooks" placeholder="Tìm sách theo tên, tác giả, mã sách..."
+                                    aria-label="Tìm kiếm sách">
+                            </div>
+                            <select class="filter-select" id="filterStatus" aria-label="Lọc theo trạng thái">
+                                <option value="all">📋 Tất cả trạng thái</option>
+                                <option value="Còn">✅ Còn trong kho</option>
+                                <option value="Đang mượn">📖 Đang mượn</option>
+                            </select>
+                            <button class="btn btn-primary" onclick="openAddBookModal()">
+                                <i class="fas fa-plus"></i> Thêm Sách
+                            </button>
+                        </div>
+
+                        <!-- Books Table -->
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Mã Sách</th>
+                                    <th>Tên Sách</th>
+                                    <th>Tác Giả</th>
+                                    <th>Thể Loại</th>
+                                    <th>Trạng Thái</th>
+                                    <th>Hành Động</th>
+                                </tr>
+                            </thead>
+                            <tbody id="booksTableBody"></tbody>
+                        </table>
+                    </div>
+                </article>
+            </div>
+
+            <!-- ===== TAB: BORROWED BOOKS ===== -->
+            <div id="tab-borrowed" class="tab-content" role="tabpanel">
+                <article class="admin-section-frame frame-borrowed">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <span class="icon icon-borrowed"><i class="fas fa-hand-holding-heart"></i></span>
+                            Danh Sách Sách Đang Mượn
+                        </h2>
+                        <span class="section-badge" id="borrowedCountBadge"
+                            style="background: var(--admin-warning-light); color: var(--admin-warning);">
+                            <i class="fas fa-hourglass-half"></i> 0 cuốn
+                        </span>
+                    </div>
+                    <div class="section-body">
+                        <!-- Search -->
+                        <div class="search-filters">
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="searchBorrowed"
+                                    placeholder="Tìm theo tên người mượn hoặc tên sách..."
+                                    aria-label="Tìm kiếm sách đang mượn">
+                            </div>
+                        </div>
+
+                        <!-- Borrowed Table -->
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>👤 Người Mượn</th>
+                                    <th>📚 Sách</th>
+                                    <th>📅 Ngày Mượn</th>
+                                    <th>⏱️ Trạng Thái</th>
+                                    <th>⚡ Hành Động</th>
+                                </tr>
+                            </thead>
+                            <tbody id="borrowedTableBody"></tbody>
+                        </table>
+                    </div>
+                </article>
+            </div>
+
+            <!-- ===== TAB: USERS ===== -->
+            <div id="tab-users" class="tab-content" role="tabpanel">
+                <article class="admin-section-frame frame-users">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <span class="icon icon-users"><i class="fas fa-user-graduate"></i></span>
+                            Quản Lý Bạn Đọc
+                        </h2>
+                        <span class="section-badge" id="userCountBadge"
+                            style="background: var(--admin-success-light); color: var(--admin-success);">
+                            <i class="fas fa-users"></i> 0 bạn đọc
+                        </span>
+                    </div>
+                    <div class="section-body">
+                        <!-- Search -->
+                        <div class="search-filters">
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="searchUsers" placeholder="Tìm bạn đọc theo tên, mã, lớp..."
+                                    aria-label="Tìm kiếm bạn đọc">
+                            </div>
+                        </div>
+
+                        <!-- Users Table -->
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Mã</th>
+                                    <th>Họ Tên</th>
+                                    <th>Lớp</th>
+                                    <th>Vai Trò</th>
+                                    <th>Sách Đang Mượn</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody"></tbody>
+                        </table>
+                    </div>
+                </article>
+            </div>
+        </main>
+    </div>
+
+    <!-- ===== ADD BOOK MODAL ===== -->
+    <div class="modal-overlay" id="addBookModal" role="dialog" aria-labelledby="modalTitle">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle"><i class="fas fa-plus-circle"></i> Thêm Sách Mới</h3>
+                <button class="modal-close" onclick="closeModal('addBookModal')" aria-label="Đóng">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="addBookForm">
+                    <div class="form-group">
+                        <label for="newBookName">Tên Sách *</label>
+                        <input type="text" id="newBookName" required placeholder="Nhập tên sách">
+                    </div>
+                    <div class="form-group">
+                        <label for="newBookAuthor">Tác Giả *</label>
+                        <input type="text" id="newBookAuthor" required placeholder="Nhập tên tác giả">
+                    </div>
+                    <div class="form-group">
+                        <label for="newBookCategory">Thể Loại</label>
+                        <select id="newBookCategory">
+                            <option value="Văn học">📚 Văn học</option>
+                            <option value="Tin học">💻 Tin học</option>
+                            <option value="Kỹ năng">🎯 Kỹ năng sống</option>
+                            <option value="Khoa học">🔬 Khoa học</option>
+                            <option value="Lịch sử">📜 Lịch sử</option>
+                            <option value="Khác">📖 Khác</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="newBookImage">Link Ảnh Bìa</label>
+                        <input type="url" id="newBookImage" placeholder="https://...">
+                    </div>
+                    <div class="form-group">
+                        <label for="newBookDesc">Mô Tả</label>
+                        <textarea id="newBookDesc" rows="3" placeholder="Mô tả ngắn về sách..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('addBookModal')">
+                    <i class="fas fa-times"></i> Hủy
+                </button>
+                <button class="btn btn-primary" onclick="addNewBook()">
+                    <i class="fas fa-check"></i> Thêm Sách
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container" aria-live="polite"></div>
+
+    <script src="script.js"></script>
+    <script>
+        let appInstance = null;
+        let searchDebounceTimer = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            appInstance = new LibraryManager();
+
+            // SECURITY CHECK
+            if (!appInstance.checkAdminAccess()) return;
+
+            // Update admin info
+            const user = appInstance.getCurrentUser();
+            if (user) {
+                document.getElementById('adminName').textContent = user.name;
+                document.getElementById('adminAvatar').textContent = user.name.charAt(0).toUpperCase();
+            }
+
+            // Initialize all data
+            refreshAllData();
+
+            // Search listeners with debounce
+            setupSearchListeners();
+        });
+
+        function setupSearchListeners() {
+            const searchInputs = [
+                { id: 'searchBorrowed', handler: renderBorrowedBooks },
+                { id: 'searchBooks', handler: renderAllBooks },
+                { id: 'searchUsers', handler: renderUsers }
+            ];
+
+            searchInputs.forEach(({ id, handler }) => {
+                document.getElementById(id).addEventListener('input', (e) => {
+                    clearTimeout(searchDebounceTimer);
+                    searchDebounceTimer = setTimeout(handler, 300);
+                });
+            });
+
+            document.getElementById('filterStatus').addEventListener('change', renderAllBooks);
+        }
+
+        function refreshAllData() {
+            updateStats();
+            renderTopBooks();
+            renderBorrowedBooks();
+            renderAllBooks();
+            renderUsers();
+            updateBadges();
+        }
+
+        function updateStats() {
+            const stats = appInstance.getStats();
+            animateNumber('statTotal', stats.total);
+            animateNumber('statBorrowed', stats.borrowed);
+            animateNumber('statAvailable', stats.available);
+            animateNumber('statUsers', appInstance.users.length);
+        }
+
+        function animateNumber(elementId, targetValue) {
+            const element = document.getElementById(elementId);
+            const currentValue = parseInt(element.textContent) || 0;
+            const difference = targetValue - currentValue;
+            const steps = 20;
+            const increment = difference / steps;
+            let step = 0;
+
+            const timer = setInterval(() => {
+                step++;
+                element.textContent = Math.round(currentValue + (increment * step));
+                if (step >= steps) {
+                    element.textContent = targetValue;
+                    clearInterval(timer);
+                }
+            }, 30);
+        }
+
+        function updateBadges() {
+            const stats = appInstance.getStats();
+            document.getElementById('bookCountBadge').innerHTML =
+                `<i class="fas fa-layer-group"></i> ${stats.total} cuốn`;
+            document.getElementById('borrowedCountBadge').innerHTML =
+                `<i class="fas fa-hourglass-half"></i> ${stats.borrowed} cuốn`;
+            document.getElementById('userCountBadge').innerHTML =
+                `<i class="fas fa-users"></i> ${appInstance.users.length} bạn đọc`;
+        }
+
+        function renderTopBooks() {
+            const container = document.getElementById('topBooksContainer');
+            const borrowCounts = {};
+
+            // Count borrows (simplified - in real app would track history)
+            appInstance.books.forEach(book => {
+                if (book.status === 'Đang mượn') {
+                    borrowCounts[book.id] = (borrowCounts[book.id] || 0) + 1;
+                }
+            });
+
+            const topBooks = appInstance.books
+                .filter(b => b.status === 'Đang mượn')
+                .slice(0, 5);
+
+            if (topBooks.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; color: var(--admin-text-secondary); padding: 20px;">
+                        <i class="fas fa-inbox" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                        <p>Chưa có sách được mượn</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = topBooks.map((book, index) => `
+                <div class="top-book-item">
+                    <div class="top-book-rank ${index < 3 ? 'rank-' + (index + 1) : 'rank-n'}">${index + 1}</div>
+                    <div class="top-book-info">
+                        <h4>${book.name}</h4>
+                        <span>${book.author || 'N/A'}</span>
+                    </div>
+                    <div class="top-book-count">${book.category || 'N/A'}</div>
+                </div>
+            `).join('');
+        }
+
+        function switchTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            // Activate selected
+            document.getElementById('tab-' + tabName).classList.add('active');
+
+            // Find and activate corresponding button
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                const btnText = btn.textContent.toLowerCase();
+                const isMatch =
+                    (tabName === 'dashboard' && btnText.includes('tổng')) ||
+                    (tabName === 'borrowed' && btnText.includes('mượn')) ||
+                    (tabName === 'books' && btnText.includes('quản lý')) ||
+                    (tabName === 'users' && btnText.includes('đọc'));
+                if (isMatch) btn.classList.add('active');
+            });
+
+            // Re-render the tab content
+            if (tabName === 'dashboard') { renderTopBooks(); }
+            if (tabName === 'borrowed') { renderBorrowedBooks(); }
+            if (tabName === 'books') { renderAllBooks(); }
+            if (tabName === 'users') { renderUsers(); }
+        }
+
+        function renderBorrowedBooks() {
+            const tbody = document.getElementById('borrowedTableBody');
+            const searchTerm = document.getElementById('searchBorrowed').value.toLowerCase().trim();
+
+            const borrowedBooks = appInstance.books.filter(b => {
+                if (b.status !== 'Đang mượn') return false;
+                if (searchTerm) {
+                    return b.name.toLowerCase().includes(searchTerm) ||
+                        (b.borrower && b.borrower.toLowerCase().includes(searchTerm));
+                }
+                return true;
+            });
+
+            if (borrowedBooks.length === 0) {
+                tbody.innerHTML = `
+                    <tr><td colspan="5">
+                        <div class="empty-state">
+                            <div class="empty-icon"><i class="fas fa-inbox"></i></div>
+                            <p>Không có sách nào đang được mượn</p>
+                        </div>
+                    </td></tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = borrowedBooks.map(book => `
+                <tr>
+                    <td>
+                        <div class="name-cell">${book.borrower || 'N/A'}</div>
+                    </td>
+                    <td>
+                        <div class="name-cell">${book.name}</div>
+                        <div class="sub-text">${book.id}</div>
+                    </td>
+                    <td>${book.borrowDate || 'N/A'}</td>
+                    <td><span class="status-pill borrowing">Đang mượn</span></td>
+                    <td>
+                        <button class="btn-action success" onclick="handleReturn('${book.id}')">
+                            <i class="fas fa-undo"></i> Thu Hồi
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderAllBooks() {
+            const tbody = document.getElementById('booksTableBody');
+            const searchTerm = document.getElementById('searchBooks').value.toLowerCase().trim();
+            const statusFilter = document.getElementById('filterStatus').value;
+
+            let filteredBooks = appInstance.books.filter(b => {
+                const matchSearch = !searchTerm ||
+                    b.name.toLowerCase().includes(searchTerm) ||
+                    b.id.toLowerCase().includes(searchTerm) ||
+                    (b.author && b.author.toLowerCase().includes(searchTerm));
+                const matchStatus = statusFilter === 'all' || b.status === statusFilter;
+                return matchSearch && matchStatus;
+            });
+
+            if (filteredBooks.length === 0) {
+                tbody.innerHTML = `
+                    <tr><td colspan="6">
+                        <div class="empty-state">
+                            <div class="empty-icon"><i class="fas fa-book"></i></div>
+                            <p>Không tìm thấy sách phù hợp</p>
+                        </div>
+                    </td></tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = filteredBooks.map(book => `
+                <tr>
+                    <td><span class="book-id">${book.id}</span></td>
+                    <td class="name-cell">${book.name}</td>
+                    <td>${book.author || 'N/A'}</td>
+                    <td>${book.category || 'N/A'}</td>
+                    <td>
+                        <span class="status-pill ${book.status === 'Còn' ? 'available' : 'borrowing'}">
+                            ${book.status === 'Còn' ? 'Còn sẵn' : 'Đang mượn'}
+                        </span>
+                    </td>
+                    <td>
+                        ${book.status === 'Đang mượn' ?
+                    `<button class="btn-action warning" onclick="handleReturn('${book.id}')"><i class="fas fa-undo"></i> Thu Hồi</button>` :
+                    ''}
+                        <button class="btn-action danger icon-only" onclick="deleteBook('${book.id}')" title="Xóa sách">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderUsers() {
+            const tbody = document.getElementById('usersTableBody');
+            const searchTerm = document.getElementById('searchUsers').value.toLowerCase().trim();
+
+            let filteredUsers = appInstance.users.filter(u => {
+                if (!searchTerm) return true;
+                return u.name.toLowerCase().includes(searchTerm) ||
+                    u.id.toLowerCase().includes(searchTerm) ||
+                    (u.class && u.class.toLowerCase().includes(searchTerm));
+            });
+
+            if (filteredUsers.length === 0) {
+                tbody.innerHTML = `
+                    <tr><td colspan="5">
+                        <div class="empty-state">
+                            <div class="empty-icon"><i class="fas fa-users"></i></div>
+                            <p>Không tìm thấy bạn đọc</p>
+                        </div>
+                    </td></tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = filteredUsers.map(user => {
+                // Count books borrowed by this user
+                const borrowedCount = appInstance.books.filter(b =>
+                    b.status === 'Đang mượn' && b.borrower && b.borrower.includes(user.name)
+                ).length;
+
+                return `
+                    <tr>
+                        <td><span class="book-id">${user.id}</span></td>
+                        <td class="name-cell">${user.name}</td>
+                        <td>${user.class || 'N/A'}</td>
+                        <td>
+                            <span class="status-pill ${user.role === 'admin' ? 'admin-role' : 'available'}">
+                                ${user.role === 'admin' ? '👑 Quản trị' : '📖 Bạn đọc'}
+                            </span>
+                        </td>
+                        <td>${borrowedCount > 0 ? `<strong>${borrowedCount}</strong> cuốn` : '—'}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function exportData() {
+            const stats = appInstance.getStats();
+            const data = {
+                exportDate: new Date().toLocaleString('vi-VN'),
+                statistics: stats,
+                books: appInstance.books,
+                users: appInstance.users
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `library-export-${new Date().toISOString().slice(0, 10)}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+
+            showToast('Đã xuất báo cáo thành công!', 'success');
+        }
+
+        // ===== ACTIONS =====
+        window.handleReturn = function (bookId) {
+            if (confirm('Xác nhận thu hồi sách này?')) {
+                const result = appInstance.returnBook(bookId);
+                if (result.success) {
+                    showToast(result.message, 'success');
+                    refreshAllData();
+                } else {
+                    showToast(result.message, 'error');
+                }
+            }
+        }
+
+        window.deleteBook = function (bookId) {
+            if (confirm('Xóa sách này khỏi thư viện? Hành động này không thể hoàn tác!')) {
+                const index = appInstance.books.findIndex(b => b.id === bookId);
+                if (index > -1) {
+                    appInstance.books.splice(index, 1);
+                    appInstance.save();
+                    appInstance.logActivity('Đã xóa sách: ' + bookId);
+                    showToast('Đã xóa sách thành công!', 'success');
+                    refreshAllData();
+                }
+            }
+        }
+
+        // ===== MODAL =====
+        function openAddBookModal() {
+            document.getElementById('addBookModal').classList.add('open');
+            document.getElementById('newBookName').focus();
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('open');
+        }
+
+        function addNewBook() {
+            const name = document.getElementById('newBookName').value.trim();
+            const author = document.getElementById('newBookAuthor').value.trim();
+            const category = document.getElementById('newBookCategory').value;
+            const image = document.getElementById('newBookImage').value.trim();
+            const desc = document.getElementById('newBookDesc').value.trim();
+
+            if (!name || !author) {
+                showToast('Vui lòng nhập tên sách và tác giả!', 'error');
+                return;
+            }
+
+            // Create new book
+            const id = 'BK' + Date.now().toString().slice(-5);
+            const newBook = {
+                id: id,
+                name: name,
+                author: author,
+                category: category,
+                image: image || 'https://via.placeholder.com/300x400?text=' + encodeURIComponent(name),
+                description: desc || 'Sách mới thêm vào thư viện.',
+                content: '<p>Nội dung đang cập nhật...</p>',
+                status: 'Còn',
+                borrower: null,
+                borrowDate: null
+            };
+
+            appInstance.books.push(newBook);
+            appInstance.save();
+            appInstance.logActivity('Thêm sách mới: ' + name);
+
+            showToast('Đã thêm sách "' + name + '" thành công!', 'success');
+            closeModal('addBookModal');
+
+            // Clear form
+            document.getElementById('addBookForm').reset();
+
+            // Refresh
+            refreshAllData();
+        }
+
+        // Close modal on overlay click
+        document.getElementById('addBookModal').addEventListener('click', function (e) {
+            if (e.target === this) closeModal('addBookModal');
+        });
+
+        // Keyboard support
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                closeModal('addBookModal');
+            }
+        });
+    </script>
+</body>
+
+</html>

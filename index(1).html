@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thư Viện THPT Nguyễn Hữu Cảnh</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ========== CUSTOM INDEX STYLES ========== */
+        body {
+            overflow-x: hidden;
+        }
+
+        /* Hero Section - Premium Design */
+        .hero-new {
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            overflow: hidden;
+        }
+
+        .hero-new::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 50%);
+            animation: pulse 15s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .hero-particles {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: float 20s infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            90% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .hero-new-content {
+            position: relative;
+            z-index: 10;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-3xl);
+            align-items: center;
+            padding: 120px 0 80px;
+        }
+
+        .hero-text-new h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            font-weight: 700;
+            color: #fff;
+            line-height: 1.1;
+            margin-bottom: var(--space-lg);
+        }
+
+        .hero-text-new h1 span {
+            background: linear-gradient(135deg, #a855f7, #6366f1, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-text-new p {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.8;
+            margin-bottom: var(--space-xl);
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: var(--space-md);
+            flex-wrap: wrap;
+        }
+
+        .btn-glow {
+            padding: 16px 32px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: var(--radius-full);
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-glow-primary {
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            color: #fff;
+            box-shadow: 0 0 30px rgba(99, 102, 241, 0.5);
+        }
+
+        .btn-glow-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 50px rgba(99, 102, 241, 0.7);
+        }
+
+        .btn-glow-outline {
+            background: transparent;
+            color: #fff;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-glow-outline:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .hero-visual {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-book-stack {
+            position: relative;
+            width: 350px;
+            height: 400px;
+        }
+
+        .floating-book {
+            position: absolute;
+            width: 180px;
+            height: 250px;
+            border-radius: 10px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+            background: linear-gradient(145deg, #fff 0%, #f0f0f0 100%);
+            overflow: hidden;
+            animation: bookFloat 6s ease-in-out infinite;
+        }
+
+        .floating-book img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .floating-book:nth-child(1) {
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%) rotate(-5deg);
+            z-index: 3;
+            animation-delay: 0s;
+        }
+
+        .floating-book:nth-child(2) {
+            top: 30px;
+            left: 20%;
+            transform: rotate(-15deg);
+            z-index: 2;
+            animation-delay: -2s;
+        }
+
+        .floating-book:nth-child(3) {
+            top: 30px;
+            right: 10%;
+            transform: rotate(10deg);
+            z-index: 2;
+            animation-delay: -4s;
+        }
+
+        @keyframes bookFloat {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(var(--rotate, -5deg));
+            }
+
+            50% {
+                transform: translateY(-20px) rotate(var(--rotate, -5deg));
+            }
+        }
+
+        .glow-orb {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.4) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(60px);
+            z-index: 0;
+            animation: orbPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes orbPulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+
+            50% {
+                transform: scale(1.2);
+                opacity: 0.8;
+            }
+        }
+
+        /* Stats Banner */
+        .stats-banner {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: var(--space-2xl) 0;
+            position: relative;
+            z-index: 10;
+            margin-top: -80px;
+            backdrop-filter: blur(20px);
+        }
+
+        .stats-inline {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-3xl);
+            flex-wrap: wrap;
+        }
+
+        .stat-inline {
+            text-align: center;
+            color: #fff;
+        }
+
+        .stat-inline-number {
+            font-size: 3rem;
+            font-weight: 700;
+            font-family: 'Playfair Display', serif;
+            background: linear-gradient(135deg, #a855f7, #6366f1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-inline-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+
+        /* Categories Section */
+        .categories-section {
+            padding: 100px 0;
+            background: linear-gradient(180deg, #24243e 0%, #0f0c29 100%);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: var(--space-3xl);
+        }
+
+        .section-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: #fff;
+            margin-bottom: var(--space-sm);
+        }
+
+        .section-header p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.1rem;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--space-lg);
+        }
+
+        .category-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent, rgba(99, 102, 241, 0.2), transparent);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .category-card:hover::before {
+            opacity: 1;
+        }
+
+        .category-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(99, 102, 241, 0.5);
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.2);
+        }
+
+        .category-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto var(--space-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 2rem;
+            transition: transform 0.3s;
+        }
+
+        .category-card:hover .category-icon {
+            transform: scale(1.1);
+        }
+
+        .category-icon.tech {
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+            color: #fff;
+        }
+
+        .category-icon.skill {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #fff;
+        }
+
+        .category-icon.lit {
+            background: linear-gradient(135deg, #ec4899, #db2777);
+            color: #fff;
+        }
+
+        .category-icon.science {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #fff;
+        }
+
+        .category-card h3 {
+            color: #fff;
+            font-size: 1.25rem;
+            margin-bottom: var(--space-sm);
+        }
+
+        .category-card p {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+        }
+
+        .category-count {
+            display: inline-block;
+            margin-top: var(--space-md);
+            padding: 5px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-full);
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.85rem;
+        }
+
+        /* Featured Books Section */
+        .featured-section {
+            padding: 100px 0;
+            background: #0f0c29;
+        }
+
+        .books-carousel {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--space-lg);
+        }
+
+        .book-card-new {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            transition: all 0.4s;
+            position: relative;
+        }
+
+        .book-card-new:hover {
+            transform: translateY(-10px);
+            border-color: rgba(168, 85, 247, 0.5);
+            box-shadow: 0 25px 50px rgba(168, 85, 247, 0.15);
+        }
+
+        .book-card-new-img {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .book-card-new:hover .book-card-new-img {
+            transform: scale(1.05);
+        }
+
+        .book-card-new-body {
+            padding: var(--space-lg);
+        }
+
+        .book-card-new-category {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(99, 102, 241, 0.2);
+            color: #a5b4fc;
+            font-size: 0.75rem;
+            border-radius: var(--radius-full);
+            margin-bottom: var(--space-sm);
+        }
+
+        .book-card-new-title {
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: var(--space-xs);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .book-card-new-author {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+        }
+
+        .book-card-new-footer {
+            padding: var(--space-md) var(--space-lg);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: var(--radius-full);
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-badge.available {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+        }
+
+        .status-badge.borrowed {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+        }
+
+        .btn-view {
+            padding: 8px 16px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .btn-view:hover {
+            background: #6366f1;
+            border-color: #6366f1;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 100px 0;
+            background: linear-gradient(135deg, #302b63 0%, #24243e 100%);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-content h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: #fff;
+            margin-bottom: var(--space-md);
+        }
+
+        .cta-content p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto var(--space-xl);
+        }
+
+        /* Info Cards */
+        .info-section {
+            padding: 80px 0;
+            background: #0f0c29;
+        }
+
+        .info-grid-new {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-lg);
+        }
+
+        .info-card-new {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
+            transition: all 0.3s;
+        }
+
+        .info-card-new:hover {
+            border-color: rgba(99, 102, 241, 0.3);
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .info-card-new-icon {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            border-radius: var(--radius-md);
+            font-size: 1.5rem;
+            color: #fff;
+            margin-bottom: var(--space-md);
+        }
+
+        .info-card-new h3 {
+            color: #fff;
+            font-size: 1.25rem;
+            margin-bottom: var(--space-md);
+        }
+
+        .info-card-new ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .info-card-new li {
+            color: rgba(255, 255, 255, 0.6);
+            padding: var(--space-xs) 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-card-new li i {
+            color: #a855f7;
+            width: 16px;
+        }
+
+        /* Footer Dark */
+        .footer-dark {
+            background: #0a0a0f;
+            padding: 60px 0 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-dark-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: var(--space-2xl);
+            margin-bottom: var(--space-2xl);
+        }
+
+        .footer-brand-new h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: #fff;
+            margin-bottom: var(--space-md);
+        }
+
+        .footer-brand-new h3 span {
+            color: #a855f7;
+        }
+
+        .footer-brand-new p {
+            color: rgba(255, 255, 255, 0.5);
+            line-height: 1.8;
+        }
+
+        .footer-links-new h4 {
+            color: #fff;
+            font-size: 1rem;
+            margin-bottom: var(--space-md);
+        }
+
+        .footer-links-new ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-links-new li {
+            margin-bottom: var(--space-sm);
+        }
+
+        .footer-links-new a {
+            color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links-new a:hover {
+            color: #a855f7;
+        }
+
+        .footer-bottom-new {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: var(--space-lg);
+            text-align: center;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+
+            .categories-grid,
+            .books-carousel {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 992px) {
+            .hero-new-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .hero-text-new h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-cta {
+                justify-content: center;
+            }
+
+            .hero-visual {
+                display: none;
+            }
+
+            .info-grid-new {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-dark-content {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+
+            .categories-grid,
+            .books-carousel {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-inline {
+                gap: var(--space-xl);
+            }
+
+            .footer-dark-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ========== HEADER ========== -->
+    <header class="header" style="background: transparent; position: absolute; width: 100%; z-index: 100;">
+        <div class="container header-inner">
+            <a href="index.html" class="logo">
+                <div class="logo-icon" style="background: linear-gradient(135deg, #6366f1, #a855f7);">
+                    <i class="fas fa-book-open-reader"></i>
+                </div>
+                <div class="logo-text" style="color: #fff;">Thư Viện <span style="color: #a855f7;">Online</span></div>
+            </a>
+
+            <nav class="nav-menu">
+                <a href="index.html" class="nav-link active" style="color: #fff;"><i class="fas fa-home"></i> Trang
+                    Chủ</a>
+                <a href="books.html" class="nav-link" style="color: rgba(255,255,255,0.7);"><i class="fas fa-book"></i>
+                    Kho Sách</a>
+                <a href="admin.html" class="nav-link" style="color: rgba(255,255,255,0.7);"><i
+                        class="fas fa-chart-line"></i> Quản Lý</a>
+            </nav>
+
+            <div class="user-actions" id="userActions"></div>
+        </div>
+    </header>
+
+    <!-- ========== HERO SECTION ========== -->
+    <section class="hero-new">
+        <div class="hero-particles" id="particles"></div>
+
+        <div class="container hero-new-content">
+            <div class="hero-text-new">
+                <h1>Khám Phá <span>Thế Giới</span><br>Qua Từng Trang Sách</h1>
+                <p>Thư viện số hiện đại của Trường THPT Nguyễn Hữu Cảnh. Hàng nghìn đầu sách đa dạng thể loại, đọc trực
+                    tuyến mọi lúc mọi nơi.</p>
+
+                <div class="hero-cta">
+                    <a href="books.html" class="btn-glow btn-glow-primary">
+                        <i class="fas fa-book-open"></i> Khám Phá Ngay
+                    </a>
+                    <a href="login.html" class="btn-glow btn-glow-outline">
+                        <i class="fas fa-user"></i> Đăng Nhập
+                    </a>
+                </div>
+            </div>
+
+            <div class="hero-visual">
+                <div class="glow-orb"></div>
+                <div class="hero-book-stack" id="bookStack">
+                    <!-- Books populated by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Banner inside hero -->
+        <div class="stats-banner">
+            <div class="container">
+                <div class="stats-inline">
+                    <div class="stat-inline">
+                        <div class="stat-inline-number" id="statTotal">0</div>
+                        <div class="stat-inline-label">Đầu Sách</div>
+                    </div>
+                    <div class="stat-inline">
+                        <div class="stat-inline-number" id="statCategories">4</div>
+                        <div class="stat-inline-label">Thể Loại</div>
+                    </div>
+                    <div class="stat-inline">
+                        <div class="stat-inline-number" id="statAvailable">0</div>
+                        <div class="stat-inline-label">Sẵn Sàng Mượn</div>
+                    </div>
+                    <div class="stat-inline">
+                        <div class="stat-inline-number">24/7</div>
+                        <div class="stat-inline-label">Đọc Online</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== CATEGORIES ========== -->
+    <section class="categories-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Khám Phá Theo Thể Loại</h2>
+                <p>Chọn thể loại sách yêu thích của bạn</p>
+            </div>
+
+            <div class="categories-grid">
+                <a href="books.html?category=Tin+học" class="category-card">
+                    <div class="category-icon tech">
+                        <i class="fas fa-laptop-code"></i>
+                    </div>
+                    <h3>Tin Học</h3>
+                    <p>Lập trình, Web, Công nghệ</p>
+                    <span class="category-count" id="countTech">0 cuốn</span>
+                </a>
+
+                <a href="books.html?category=Kỹ+năng" class="category-card">
+                    <div class="category-icon skill">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>Kỹ Năng</h3>
+                    <p>Phát triển bản thân</p>
+                    <span class="category-count" id="countSkill">0 cuốn</span>
+                </a>
+
+                <a href="books.html?category=Văn+học" class="category-card">
+                    <div class="category-icon lit">
+                        <i class="fas fa-feather-alt"></i>
+                    </div>
+                    <h3>Văn Học</h3>
+                    <p>Tiểu thuyết, Truyện ngắn</p>
+                    <span class="category-count" id="countLit">0 cuốn</span>
+                </a>
+
+                <a href="books.html?category=Khoa+học" class="category-card">
+                    <div class="category-icon science">
+                        <i class="fas fa-atom"></i>
+                    </div>
+                    <h3>Khoa Học</h3>
+                    <p>Vũ trụ, Sinh học, Vật lý</p>
+                    <span class="category-count" id="countScience">0 cuốn</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== FEATURED BOOKS ========== -->
+    <section class="featured-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Sách Được Yêu Thích</h2>
+                <p>Những cuốn sách hay nhất dành cho bạn</p>
+            </div>
+
+            <div class="books-carousel" id="featuredBooks">
+                <!-- Populated by JS -->
+            </div>
+
+            <div style="text-align: center; margin-top: var(--space-2xl);">
+                <a href="books.html" class="btn-glow btn-glow-primary">
+                    Xem Tất Cả <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== CTA SECTION ========== -->
+    <section class="cta-section">
+        <div class="container cta-content">
+            <h2>Bắt Đầu Hành Trình Đọc Sách</h2>
+            <p>Đăng ký tài khoản miễn phí để mượn sách, đọc online và lưu trữ danh sách yêu thích của bạn.</p>
+            <a href="register.html" class="btn-glow btn-glow-primary">
+                <i class="fas fa-user-plus"></i> Đăng Ký Ngay
+            </a>
+        </div>
+    </section>
+
+    <!-- ========== INFO SECTION ========== -->
+    <section class="info-section">
+        <div class="container">
+            <div class="info-grid-new">
+                <div class="info-card-new">
+                    <div class="info-card-new-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3>Giờ Hoạt Động</h3>
+                    <ul>
+                        <li><i class="fas fa-calendar-day"></i> Thứ 2 - Thứ 6: 7:00 - 17:00</li>
+                        <li><i class="fas fa-calendar-day"></i> Thứ 7: 7:30 - 11:30</li>
+                        <li><i class="fas fa-laptop"></i> Online: 24/7</li>
+                    </ul>
+                </div>
+
+                <div class="info-card-new">
+                    <div class="info-card-new-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Quy Định Mượn Sách</h3>
+                    <ul>
+                        <li><i class="fas fa-check"></i> Mượn tối đa 3 cuốn/lần</li>
+                        <li><i class="fas fa-check"></i> Thời hạn: 14 ngày</li>
+                        <li><i class="fas fa-check"></i> Gia hạn online dễ dàng</li>
+                    </ul>
+                </div>
+
+                <div class="info-card-new">
+                    <div class="info-card-new-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <h3>Liên Hệ Hỗ Trợ</h3>
+                    <ul>
+                        <li><i class="fas fa-phone"></i> (028) 1234 5678</li>
+                        <li><i class="fas fa-envelope"></i> thuvien@nhc.edu.vn</li>
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Đường ABC, Q.XYZ</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="footer-dark">
+        <div class="container">
+            <div class="footer-dark-content">
+                <div class="footer-brand-new">
+                    <h3>Thư Viện <span>Online</span></h3>
+                    <p>Hệ thống thư viện số hiện đại của Trường THPT Nguyễn Hữu Cảnh. Nơi nuôi dưỡng đam mê đọc sách và
+                        khám phá tri thức.</p>
+                </div>
+
+                <div class="footer-links-new">
+                    <h4>Liên Kết</h4>
+                    <ul>
+                        <li><a href="index.html">Trang Chủ</a></li>
+                        <li><a href="books.html">Kho Sách</a></li>
+                        <li><a href="admin.html">Quản Lý</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-links-new">
+                    <h4>Tài Khoản</h4>
+                    <ul>
+                        <li><a href="login.html">Đăng Nhập</a></li>
+                        <li><a href="register.html">Đăng Ký</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-links-new">
+                    <h4>Hỗ Trợ</h4>
+                    <ul>
+                        <li><a href="#">Hướng Dẫn</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Liên Hệ</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom-new">
+                <p>&copy; 2024 Thư Viện THPT Nguyễn Hữu Cảnh. Thiết kế bởi Nhóm Tin Học.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const app = new LibraryManager();
+
+            // Update Header
+            updateUserHeader();
+
+            // Create Particles
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                particlesContainer.appendChild(particle);
+            }
+
+            // Stats
+            const stats = app.getStats();
+            document.getElementById('statTotal').textContent = stats.total;
+            document.getElementById('statAvailable').textContent = stats.available;
+
+            // Category Counts
+            const categories = {
+                'Tin học': document.getElementById('countTech'),
+                'Kỹ năng': document.getElementById('countSkill'),
+                'Văn học': document.getElementById('countLit'),
+                'Khoa học': document.getElementById('countScience')
+            };
+            for (const [cat, el] of Object.entries(categories)) {
+                const count = app.books.filter(b => b.category === cat).length;
+                if (el) el.textContent = count + ' cuốn';
+            }
+
+            // Book Stack in Hero
+            const bookStack = document.getElementById('bookStack');
+            const topBooks = app.books.slice(0, 3);
+            topBooks.forEach((book, i) => {
+                const bookEl = document.createElement('div');
+                bookEl.className = 'floating-book';
+                bookEl.innerHTML = `<img src="${book.image}" alt="${book.name}" onerror="this.src='https://via.placeholder.com/180x250?text=Book'">`;
+                bookStack.appendChild(bookEl);
+            });
+
+            // Featured Books
+            const featuredContainer = document.getElementById('featuredBooks');
+            if (featuredContainer) {
+                const books = app.books.slice(0, 4);
+                books.forEach(book => {
+                    const statusClass = book.status === 'Còn' ? 'available' : 'borrowed';
+                    const statusText = book.status === 'Còn' ? 'Có Sẵn' : 'Đang Mượn';
+
+                    const card = document.createElement('div');
+                    card.className = 'book-card-new';
+                    card.innerHTML = `
+                        <img src="${book.image || 'https://via.placeholder.com/300x280?text=No+Image'}" alt="${book.name}" class="book-card-new-img" onerror="this.src='https://via.placeholder.com/300x280?text=No+Image'">
+                        <div class="book-card-new-body">
+                            <span class="book-card-new-category">${book.category || 'Tổng Hợp'}</span>
+                            <h3 class="book-card-new-title">${book.name}</h3>
+                            <p class="book-card-new-author"><i class="fas fa-user"></i> ${book.author || 'Chưa rõ'}</p>
+                        </div>
+                        <div class="book-card-new-footer">
+                            <span class="status-badge ${statusClass}">${statusText}</span>
+                            <a href="detail.html?id=${book.id}" class="btn-view">
+                                <i class="fas fa-book-open"></i> Đọc Ngay
+                            </a>
+                        </div>
+                    `;
+                    featuredContainer.appendChild(card);
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

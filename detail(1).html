@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi Tiết Sách - Thư Viện THPT Nguyễn Hữu Cảnh</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <!-- PDF.js Library for rendering PDFs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <style>
+        .breadcrumb {
+            padding: var(--space-md) 0;
+            color: var(--gray-500);
+            font-size: 0.9rem;
+        }
+
+        .breadcrumb a {
+            color: var(--primary);
+        }
+
+        .breadcrumb i {
+            margin: 0 var(--space-sm);
+            font-size: 0.75rem;
+        }
+
+        .detail-container {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: var(--space-2xl);
+            padding: var(--space-xl) 0;
+        }
+
+        .book-sidebar {
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        .book-cover {
+            width: 100%;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            margin-bottom: var(--space-lg);
+        }
+
+        .book-info h1 {
+            font-size: 1.75rem;
+            margin-bottom: var(--space-md);
+            color: var(--dark);
+        }
+
+        .book-meta-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 var(--space-lg) 0;
+        }
+
+        .book-meta-list li {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            padding: var(--space-sm) 0;
+            color: var(--gray-600);
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .book-meta-list li i {
+            color: var(--primary);
+            width: 20px;
+        }
+
+        .book-actions {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+        }
+
+        /* ===== PDF READER STYLES ===== */
+        .book-reader {
+            background: #fff;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+        }
+
+        .reader-header {
+            background: linear-gradient(135deg, #1e293b, #334155);
+            color: #fff;
+            padding: var(--space-md) var(--space-lg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .reader-header h3 {
+            margin: 0;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .reader-controls {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+
+        .page-indicator {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 6px 14px;
+            border-radius: var(--radius-full);
+            font-size: 0.85rem;
+        }
+
+        .reader-content {
+            min-height: 500px;
+            max-height: 600px;
+            overflow-y: auto;
+            padding: var(--space-2xl);
+            background: linear-gradient(to bottom, #fffef8, #fff9e6);
+            position: relative;
+        }
+
+        .reader-content::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.05), transparent);
+            transform: translateX(-50%);
+        }
+
+        .page-content {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            font-size: 1.1rem;
+            line-height: 2;
+            color: #2d3748;
+            max-width: 700px;
+            margin: 0 auto;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .page-content h2 {
+            font-size: 1.5rem;
+            color: #1a365d;
+            margin-bottom: var(--space-lg);
+            padding-bottom: var(--space-sm);
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .page-content p {
+            text-indent: 2em;
+            margin-bottom: 1.5em;
+            text-align: justify;
+        }
+
+        .page-content ul {
+            margin: 1em 0;
+            padding-left: 2em;
+        }
+
+        .page-content li {
+            margin-bottom: 0.5em;
+        }
+
+        .page-content pre {
+            background: #1e293b;
+            color: #a5f3fc;
+            padding: var(--space-md);
+            border-radius: var(--radius-sm);
+            overflow-x: auto;
+            font-family: 'Consolas', monospace;
+            font-size: 0.95rem;
+        }
+
+        .reader-footer {
+            background: #f8fafc;
+            padding: var(--space-lg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: var(--space-lg);
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            padding: 12px 24px;
+            border-radius: var(--radius-full);
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .nav-btn.prev {
+            background: #e2e8f0;
+            color: #475569;
+        }
+
+        .nav-btn.prev:hover:not(:disabled) {
+            background: #cbd5e1;
+        }
+
+        .nav-btn.next {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: #fff;
+        }
+
+        .nav-btn.next:hover:not(:disabled) {
+            transform: translateX(3px);
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .page-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .page-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #cbd5e1;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .page-dot.active {
+            background: #6366f1;
+            transform: scale(1.2);
+        }
+
+        .page-dot:hover {
+            background: #94a3b8;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--white);
+            width: 90%;
+            max-width: 450px;
+            border-radius: var(--radius-md);
+            padding: var(--space-xl);
+            animation: zoomIn 0.3s ease;
+        }
+
+        @keyframes zoomIn {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-lg);
+        }
+
+        .modal-header h3 {
+            font-size: 1.25rem;
+        }
+
+        .modal-close {
+            background: none;
+            font-size: 1.5rem;
+            color: var(--gray-500);
+        }
+
+        @media (max-width: 992px) {
+            .detail-container {
+                grid-template-columns: 1fr;
+            }
+
+            .book-sidebar {
+                position: static;
+                max-width: 300px;
+                margin: 0 auto;
+            }
+
+            .reader-content {
+                min-height: 400px;
+                padding: var(--space-lg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ========== HEADER ========== -->
+    <header class="header">
+        <div class="container header-inner">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-book-open-reader"></i>
+                </div>
+                <div class="logo-text">Thư Viện <span>Online</span></div>
+            </a>
+
+            <nav class="nav-menu">
+                <a href="index.html" class="nav-link"><i class="fas fa-home"></i> Trang Chủ</a>
+                <a href="books.html" class="nav-link active"><i class="fas fa-book"></i> Kho Sách</a>
+                <a href="admin.html" class="nav-link"><i class="fas fa-chart-line"></i> Quản Lý</a>
+            </nav>
+
+            <div class="user-actions" id="userActions"></div>
+        </div>
+    </header>
+
+    <!-- ========== BREADCRUMB ========== -->
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="index.html">Trang Chủ</a>
+            <i class="fas fa-chevron-right"></i>
+            <a href="books.html">Kho Sách</a>
+            <i class="fas fa-chevron-right"></i>
+            <span id="breadcrumbTitle">Chi Tiết</span>
+        </div>
+    </div>
+
+    <!-- ========== BOOK DETAIL ========== -->
+    <section class="section" style="padding-top: 0;">
+        <div class="container">
+            <div class="detail-container">
+                <!-- Sidebar -->
+                <div class="book-sidebar">
+                    <img src="" alt="" id="bookImage" class="book-cover">
+
+                    <div class="book-info">
+                        <h1 id="bookTitle">Đang tải...</h1>
+
+                        <ul class="book-meta-list">
+                            <li><i class="fas fa-user"></i> <span id="bookAuthor"></span></li>
+                            <li><i class="fas fa-folder"></i> <span id="bookCategory"></span></li>
+                            <li><i class="fas fa-barcode"></i> <span id="bookId"></span></li>
+                            <li><i class="fas fa-circle-check"></i> <span id="bookStatus"></span></li>
+                        </ul>
+
+                        <p id="bookDescription" style="color: var(--gray-600); margin-bottom: var(--space-lg);"></p>
+
+                        <div class="book-actions">
+                            <button class="btn btn-primary btn-lg" id="borrowBtn" onclick="openBorrowModal()">
+                                <i class="fas fa-hand-holding-heart"></i> Mượn Sách Này
+                            </button>
+                            <a href="books.html" class="btn btn-outline btn-lg">
+                                <i class="fas fa-arrow-left"></i> Quay Lại
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reader Section -->
+                <div class="book-reader">
+                    <div class="reader-header">
+                        <h3><i class="fas fa-book-open"></i> Đọc Sách Trực Tuyến</h3>
+                        <div class="reader-controls">
+                            <span class="page-indicator">
+                                Trang <span id="currentPage">1</span> / <span id="totalPages">1</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="reader-content">
+                        <div class="page-content" id="pageContent">
+                            <p>Đang tải nội dung...</p>
+                        </div>
+                    </div>
+
+                    <div class="reader-footer">
+                        <button class="nav-btn prev" id="prevBtn" onclick="prevPage()">
+                            <i class="fas fa-chevron-left"></i> Trang Trước
+                        </button>
+
+                        <div class="page-dots" id="pageDots"></div>
+
+                        <button class="nav-btn next" id="nextBtn" onclick="nextPage()">
+                            Trang Sau <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== BORROW MODAL ========== -->
+    <div class="modal-overlay" id="borrowModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-hand-holding-heart"></i> Đăng Ký Mượn Sách</h3>
+                <button class="modal-close" onclick="closeBorrowModal()">&times;</button>
+            </div>
+
+            <form id="borrowForm">
+                <div class="form-group">
+                    <label class="form-label">Họ và Tên</label>
+                    <input type="text" class="form-input" id="borrowName" placeholder="Nhập họ tên của bạn" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Lớp</label>
+                    <input type="text" class="form-input" id="borrowClass" placeholder="Ví dụ: 12A1" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; margin-top: var(--space-md);">
+                    <i class="fas fa-check"></i> Xác Nhận Mượn
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom" style="border-top: none; padding-top: 0;">
+                <p>&copy; 2024 Thư Viện THPT Nguyễn Hữu Cảnh. Thiết kế bởi Nhóm Tin Học.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="script.js"></script>
+    <script>
+        let currentBook = null;
+        let currentBookPages = [];
+        let currentPageIndex = 0;
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const app = new LibraryManager();
+            updateUserHeader();
+
+            // Get book ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const bookId = urlParams.get('id');
+
+            if (!bookId) {
+                showToast('Không tìm thấy sách!', 'error');
+                setTimeout(() => window.location.href = 'books.html', 2000);
+                return;
+            }
+
+            currentBook = app.findBook(bookId);
+
+            if (!currentBook) {
+                showToast('Sách không tồn tại!', 'error');
+                setTimeout(() => window.location.href = 'books.html', 2000);
+                return;
+            }
+
+            // Populate UI
+            document.getElementById('bookImage').src = currentBook.image || 'https://via.placeholder.com/320x450?text=No+Image';
+            document.getElementById('bookImage').alt = currentBook.name;
+            document.getElementById('bookTitle').textContent = currentBook.name;
+            document.getElementById('breadcrumbTitle').textContent = currentBook.name;
+            document.getElementById('bookAuthor').textContent = currentBook.author || 'Chưa rõ';
+            document.getElementById('bookCategory').textContent = currentBook.category || 'Tổng Hợp';
+            document.getElementById('bookId').textContent = currentBook.id;
+            document.getElementById('bookDescription').textContent = currentBook.description || 'Chưa có mô tả.';
+
+            // Status
+            const statusEl = document.getElementById('bookStatus');
+            const borrowBtn = document.getElementById('borrowBtn');
+            if (currentBook.status === 'Còn') {
+                statusEl.textContent = 'Có sẵn để mượn';
+                statusEl.style.color = 'var(--success)';
+                borrowBtn.disabled = false;
+            } else {
+                statusEl.textContent = 'Đang được mượn bởi: ' + currentBook.borrower;
+                statusEl.style.color = 'var(--warning)';
+                borrowBtn.disabled = true;
+                borrowBtn.innerHTML = '<i class="fas fa-ban"></i> Sách Đã Được Mượn';
+            }
+
+            // Parse content pages
+            try {
+                currentBookPages = JSON.parse(currentBook.content);
+            } catch (e) {
+                // Fallback: treat content as single page HTML
+                currentBookPages = [currentBook.content || '<p>Nội dung đang được cập nhật...</p>'];
+            }
+
+            // Ensure it's an array
+            if (!Array.isArray(currentBookPages)) {
+                currentBookPages = [currentBookPages];
+            }
+
+            // Initialize reader
+            if (currentBook.pdf) {
+                // PDF MODE
+                setupPdfMode(currentBook.pdf);
+            } else {
+                // TEXT MODE
+                initReader();
+            }
+
+            // Auto-fill if logged in
+            const user = app.getCurrentUser();
+            if (user) {
+                document.getElementById('borrowName').value = user.name;
+                document.getElementById('borrowClass').value = user.class || '';
+            }
+
+            // Borrow Form
+            document.getElementById('borrowForm').addEventListener('submit', function (e) {
+                e.preventDefault();
+                const name = document.getElementById('borrowName').value.trim();
+                const cls = document.getElementById('borrowClass').value.trim();
+                const borrowerInfo = `${name} - ${cls}`;
+
+                const result = app.borrowBook(currentBook.id, borrowerInfo);
+
+                if (result.success) {
+                    showToast(result.message, 'success');
+                    closeBorrowModal();
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    showToast(result.message, 'error');
+                }
+            });
+        });
+
+        function initReader() {
+            document.getElementById('totalPages').textContent = currentBookPages.length;
+            renderPageDots();
+            goToPage(0);
+        }
+
+        function renderPageDots() {
+            const container = document.getElementById('pageDots');
+            container.innerHTML = '';
+
+            currentBookPages.forEach((_, index) => {
+                const dot = document.createElement('div');
+                dot.className = 'page-dot' + (index === currentPageIndex ? ' active' : '');
+                dot.onclick = () => goToPage(index);
+                container.appendChild(dot);
+            });
+        }
+
+        function goToPage(index) {
+            if (index < 0 || index >= currentBookPages.length) return;
+
+            currentPageIndex = index;
+
+            // Update content with animation
+            const contentEl = document.getElementById('pageContent');
+            contentEl.style.opacity = 0;
+
+            setTimeout(() => {
+                contentEl.innerHTML = currentBookPages[currentPageIndex];
+                contentEl.style.opacity = 1;
+            }, 200);
+
+            // Update page indicator
+            document.getElementById('currentPage').textContent = currentPageIndex + 1;
+
+            // Update dots
+            document.querySelectorAll('.page-dot').forEach((dot, i) => {
+                dot.classList.toggle('active', i === currentPageIndex);
+            });
+
+            // Update buttons
+            document.getElementById('prevBtn').disabled = currentPageIndex === 0;
+            document.getElementById('nextBtn').disabled = currentPageIndex === currentBookPages.length - 1;
+        }
+
+        function setupPdfMode(pdfFilename) {
+            // 1. Hide text-only controls
+            document.querySelector('.reader-controls').style.display = 'none';
+            document.querySelector('.reader-footer').style.display = 'none';
+
+            // 2. Adjust container
+            const contentEl = document.querySelector('.reader-content');
+            contentEl.style.padding = '20px';
+            contentEl.style.height = 'auto';
+            contentEl.style.maxHeight = 'none';
+            contentEl.style.overflow = 'auto';
+            contentEl.style.background = '#525659';
+            contentEl.style.minHeight = '600px';
+
+            // 3. Create PDF viewer structure
+            contentEl.innerHTML = `
+                <div id="pdf-viewer-container" style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+                    <div id="pdf-controls" style="display: flex; gap: 15px; align-items: center; padding: 15px 25px; background: rgba(0,0,0,0.5); border-radius: 30px; position: sticky; top: 0; z-index: 100;">
+                        <button onclick="pdfPrevPage()" id="pdf-prev-btn" style="padding: 10px 20px; background: #6366f1; color: white; border: none; border-radius: 20px; cursor: pointer; font-weight: 500;">
+                            <i class="fas fa-chevron-left"></i> Trước
+                        </button>
+                        <span id="pdf-page-info" style="color: white; font-weight: 500;">Trang 1 / 1</span>
+                        <button onclick="pdfNextPage()" id="pdf-next-btn" style="padding: 10px 20px; background: #6366f1; color: white; border: none; border-radius: 20px; cursor: pointer; font-weight: 500;">
+                            Sau <i class="fas fa-chevron-right"></i>
+                        </button>
+                        <a href="${pdfFilename}" download style="padding: 10px 20px; background: #a855f7; color: white; border: none; border-radius: 20px; cursor: pointer; font-weight: 500; text-decoration: none; display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-download"></i> Tải PDF
+                        </a>
+                    </div>
+                    <div id="pdf-loading" style="color: white; padding: 40px; text-align: center;">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 3rem; margin-bottom: 20px; display: block;"></i>
+                        Đang tải PDF...
+                    </div>
+                    <canvas id="pdf-canvas" style="max-width: 100%; box-shadow: 0 10px 40px rgba(0,0,0,0.5); display: none;"></canvas>
+                </div>
+            `;
+
+            // 4. Load PDF using PDF.js
+            loadPdfWithPdfJs(pdfFilename);
+        }
+
+        // PDF.js global variables
+        let pdfDoc = null;
+        let pdfCurrentPage = 1;
+        let pdfTotalPages = 0;
+        let pdfScale = 1.5;
+
+        function loadPdfWithPdfJs(pdfFilename) {
+            // Set worker source
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+            const loadingTask = pdfjsLib.getDocument(pdfFilename);
+            loadingTask.promise.then(function (pdf) {
+                pdfDoc = pdf;
+                pdfTotalPages = pdf.numPages;
+                document.getElementById('pdf-page-info').textContent = `Trang 1 / ${pdfTotalPages}`;
+                document.getElementById('pdf-loading').style.display = 'none';
+                document.getElementById('pdf-canvas').style.display = 'block';
+                renderPdfPage(1);
+            }).catch(function (error) {
+                console.error('Error loading PDF:', error);
+                document.getElementById('pdf-loading').innerHTML = `
+                    <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #ef4444; margin-bottom: 20px; display: block;"></i>
+                    <p style="margin-bottom: 15px;">Không thể tải PDF. Vui lòng tải về để đọc.</p>
+                    <a href="${pdfFilename}" download style="padding: 15px 30px; background: linear-gradient(135deg, #6366f1, #a855f7); color: white; text-decoration: none; border-radius: 30px; font-weight: 600;">
+                        <i class="fas fa-download"></i> Tải PDF Về Máy
+                    </a>
+                `;
+            });
+        }
+
+        function renderPdfPage(pageNum) {
+            pdfDoc.getPage(pageNum).then(function (page) {
+                const canvas = document.getElementById('pdf-canvas');
+                const ctx = canvas.getContext('2d');
+
+                const viewport = page.getViewport({ scale: pdfScale });
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                const renderContext = {
+                    canvasContext: ctx,
+                    viewport: viewport
+                };
+
+                page.render(renderContext);
+                pdfCurrentPage = pageNum;
+                document.getElementById('pdf-page-info').textContent = `Trang ${pageNum} / ${pdfTotalPages}`;
+
+                // Update button states
+                document.getElementById('pdf-prev-btn').disabled = pageNum <= 1;
+                document.getElementById('pdf-next-btn').disabled = pageNum >= pdfTotalPages;
+            });
+        }
+
+        function pdfPrevPage() {
+            if (pdfCurrentPage > 1) {
+                renderPdfPage(pdfCurrentPage - 1);
+            }
+        }
+
+        function pdfNextPage() {
+            if (pdfCurrentPage < pdfTotalPages) {
+                renderPdfPage(pdfCurrentPage + 1);
+            }
+        }
+
+        function prevPage() {
+            goToPage(currentPageIndex - 1);
+        }
+
+        function nextPage() {
+            goToPage(currentPageIndex + 1);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'ArrowLeft') prevPage();
+            if (e.key === 'ArrowRight') nextPage();
+        });
+
+        function openBorrowModal() {
+            document.getElementById('borrowModal').classList.add('open');
+        }
+
+        function closeBorrowModal() {
+            document.getElementById('borrowModal').classList.remove('open');
+        }
+
+        // Close on overlay click
+        document.getElementById('borrowModal').addEventListener('click', function (e) {
+            if (e.target === this) closeBorrowModal();
+        });
+    </script>
+</body>
+
+</html>
