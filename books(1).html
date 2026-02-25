@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kho Sách - Thư Viện THPT Nguyễn Hữu Cảnh</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ========== BOOKS PAGE DARK THEME ========== */
+        body {
+            background: #0f0c29;
+            min-height: 100vh;
+        }
+
+        /* Header Override */
+        .header-dark {
+            background: rgba(15, 12, 41, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .header-dark .logo-text {
+            color: #fff;
+        }
+
+        .header-dark .logo-text span {
+            color: #a855f7;
+        }
+
+        .header-dark .nav-link {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .header-dark .nav-link.active,
+        .header-dark .nav-link:hover {
+            color: #fff;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(135deg, #302b63 0%, #24243e 100%);
+            padding: 120px 0 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .page-header-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            color: #fff;
+            margin-bottom: var(--space-sm);
+        }
+
+        .page-header h1 i {
+            color: #a855f7;
+            margin-right: var(--space-sm);
+        }
+
+        .page-header p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.1rem;
+        }
+
+        /* Search & Filter Bar */
+        .filter-bar {
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: var(--space-lg) 0;
+            position: sticky;
+            top: 70px;
+            z-index: 50;
+            backdrop-filter: blur(20px);
+        }
+
+        .filter-bar-inner {
+            display: flex;
+            gap: var(--space-md);
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 300px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 14px 20px 14px 50px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-full);
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .search-box input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #6366f1;
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: var(--space-sm);
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-full);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-btn:hover {
+            background: rgba(99, 102, 241, 0.1);
+            border-color: rgba(99, 102, 241, 0.3);
+            color: #fff;
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            border-color: transparent;
+            color: #fff;
+        }
+
+        .filter-btn .count {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+        }
+
+        .filter-btn.active .count {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Books Grid */
+        .books-section {
+            padding: 60px 0 100px;
+        }
+
+        .books-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-xl);
+            flex-wrap: wrap;
+            gap: var(--space-md);
+        }
+
+        .books-count {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.95rem;
+        }
+
+        .books-count span {
+            color: #a855f7;
+            font-weight: 600;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: var(--space-xs);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 5px;
+            border-radius: var(--radius-md);
+        }
+
+        .view-btn {
+            padding: 8px 12px;
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            border-radius: var(--radius-sm);
+            transition: all 0.3s;
+        }
+
+        .view-btn.active {
+            background: #6366f1;
+            color: #fff;
+        }
+
+        .books-grid-new {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: var(--space-lg);
+        }
+
+        /* Book Card */
+        .book-card-dark {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .book-card-dark::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent, rgba(99, 102, 241, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .book-card-dark:hover::before {
+            opacity: 1;
+        }
+
+        .book-card-dark:hover {
+            transform: translateY(-8px);
+            border-color: rgba(168, 85, 247, 0.4);
+            box-shadow: 0 20px 40px rgba(168, 85, 247, 0.15);
+        }
+
+        .book-card-dark-img-wrapper {
+            position: relative;
+            height: 320px;
+            overflow: hidden;
+        }
+
+        .book-card-dark-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .book-card-dark:hover .book-card-dark-img {
+            transform: scale(1.08);
+        }
+
+        .book-card-dark-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(15, 12, 41, 0.95) 0%, transparent 50%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: var(--space-lg);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .book-card-dark:hover .book-card-dark-overlay {
+            opacity: 1;
+        }
+
+        .overlay-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            border: none;
+            border-radius: var(--radius-full);
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .overlay-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+        }
+
+        .book-card-dark-status {
+            position: absolute;
+            top: var(--space-md);
+            right: var(--space-md);
+            padding: 6px 14px;
+            border-radius: var(--radius-full);
+            font-size: 0.8rem;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+        }
+
+        .book-card-dark-status.available {
+            background: rgba(16, 185, 129, 0.9);
+            color: #fff;
+        }
+
+        .book-card-dark-status.borrowed {
+            background: rgba(239, 68, 68, 0.9);
+            color: #fff;
+        }
+
+        .book-card-dark-body {
+            padding: var(--space-lg);
+            position: relative;
+            z-index: 1;
+        }
+
+        .book-card-dark-category {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(99, 102, 241, 0.2);
+            color: #a5b4fc;
+            font-size: 0.75rem;
+            border-radius: var(--radius-full);
+            margin-bottom: var(--space-sm);
+        }
+
+        .book-card-dark-title {
+            color: #fff;
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: var(--space-xs);
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .book-card-dark-author {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .book-card-dark-id {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.8rem;
+            margin-top: var(--space-sm);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            color: rgba(255, 255, 255, 0.1);
+            margin-bottom: var(--space-lg);
+        }
+
+        .empty-state h3 {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 1.5rem;
+            margin-bottom: var(--space-sm);
+        }
+
+        .empty-state p {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Footer */
+        .footer-dark {
+            background: #0a0a0f;
+            padding: 40px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-dark p {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .filter-bar-inner {
+                flex-direction: column;
+            }
+
+            .search-box {
+                width: 100%;
+                min-width: auto;
+            }
+
+            .filter-buttons {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .books-grid-new {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ========== HEADER ========== -->
+    <header class="header header-dark">
+        <div class="container header-inner">
+            <a href="index.html" class="logo">
+                <div class="logo-icon" style="background: linear-gradient(135deg, #6366f1, #a855f7);">
+                    <i class="fas fa-book-open-reader"></i>
+                </div>
+                <div class="logo-text">Thư Viện <span>Online</span></div>
+            </a>
+
+            <nav class="nav-menu">
+                <a href="index.html" class="nav-link"><i class="fas fa-home"></i> Trang Chủ</a>
+                <a href="books.html" class="nav-link active"><i class="fas fa-book"></i> Kho Sách</a>
+                <a href="admin.html" class="nav-link"><i class="fas fa-chart-line"></i> Quản Lý</a>
+            </nav>
+
+            <div class="user-actions" id="userActions"></div>
+        </div>
+    </header>
+
+    <!-- ========== PAGE HEADER ========== -->
+    <section class="page-header">
+        <div class="container page-header-content">
+            <h1><i class="fas fa-book-open"></i> Kho Sách</h1>
+            <p>Khám phá hàng trăm đầu sách đa dạng thể loại</p>
+        </div>
+    </section>
+
+    <!-- ========== FILTER BAR ========== -->
+    <div class="filter-bar">
+        <div class="container">
+            <div class="filter-bar-inner">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Tìm kiếm theo tên sách, tác giả...">
+                </div>
+
+                <div class="filter-buttons" id="filterButtons">
+                    <button class="filter-btn active" data-filter="all">
+                        <i class="fas fa-layer-group"></i> Tất Cả <span class="count" id="countAll">0</span>
+                    </button>
+                    <button class="filter-btn" data-filter="Tin học">
+                        <i class="fas fa-laptop-code"></i> Tin Học
+                    </button>
+                    <button class="filter-btn" data-filter="Kỹ năng">
+                        <i class="fas fa-brain"></i> Kỹ Năng
+                    </button>
+                    <button class="filter-btn" data-filter="Văn học">
+                        <i class="fas fa-feather-alt"></i> Văn Học
+                    </button>
+                    <button class="filter-btn" data-filter="Khoa học">
+                        <i class="fas fa-atom"></i> Khoa Học
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== BOOKS SECTION ========== -->
+    <section class="books-section">
+        <div class="container">
+            <div class="books-header">
+                <div class="books-count">
+                    Hiển thị <span id="showingCount">0</span> cuốn sách
+                </div>
+
+                <div class="view-toggle">
+                    <button class="view-btn active" data-view="grid" title="Lưới">
+                        <i class="fas fa-th-large"></i>
+                    </button>
+                    <button class="view-btn" data-view="list" title="Danh sách">
+                        <i class="fas fa-list"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="books-grid-new" id="booksGrid">
+                <!-- Populated by JS -->
+            </div>
+
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <div class="empty-state-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <h3>Không tìm thấy sách nào</h3>
+                <p>Thử tìm kiếm với từ khóa khác hoặc xóa bộ lọc</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="footer-dark">
+        <div class="container">
+            <p>&copy; 2024 Thư Viện THPT Nguyễn Hữu Cảnh. Thiết kế bởi Nhóm Tin Học.</p>
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const app = new LibraryManager();
+            let currentFilter = 'all';
+            let searchQuery = '';
+
+            // Update Header
+            updateUserHeader();
+
+            // Total count
+            document.getElementById('countAll').textContent = app.books.length;
+
+            // Get URL params
+            const urlParams = new URLSearchParams(window.location.search);
+            const categoryParam = urlParams.get('category');
+            const queryParam = urlParams.get('q');
+
+            if (categoryParam) {
+                currentFilter = categoryParam;
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.filter === categoryParam);
+                });
+            }
+
+            if (queryParam) {
+                searchQuery = queryParam;
+                document.getElementById('searchInput').value = queryParam;
+            }
+
+            // Render Books
+            function renderBooks() {
+                const grid = document.getElementById('booksGrid');
+                const emptyState = document.getElementById('emptyState');
+                grid.innerHTML = '';
+
+                let filteredBooks = app.books;
+
+                // Filter by category
+                if (currentFilter !== 'all') {
+                    filteredBooks = filteredBooks.filter(b => b.category === currentFilter);
+                }
+
+                // Filter by search
+                if (searchQuery) {
+                    const q = searchQuery.toLowerCase();
+                    filteredBooks = filteredBooks.filter(b =>
+                        b.name.toLowerCase().includes(q) ||
+                        (b.author && b.author.toLowerCase().includes(q)) ||
+                        b.id.toLowerCase().includes(q)
+                    );
+                }
+
+                // Update count
+                document.getElementById('showingCount').textContent = filteredBooks.length;
+
+                // Show empty state
+                if (filteredBooks.length === 0) {
+                    emptyState.style.display = 'block';
+                    return;
+                }
+                emptyState.style.display = 'none';
+
+                // Render cards
+                filteredBooks.forEach(book => {
+                    const statusClass = book.status === 'Còn' ? 'available' : 'borrowed';
+                    const statusText = book.status === 'Còn' ? 'Có Sẵn' : 'Đang Mượn';
+
+                    const card = document.createElement('div');
+                    card.className = 'book-card-dark';
+                    card.innerHTML = `
+                        <div class="book-card-dark-img-wrapper">
+                            <img src="${book.image || 'https://via.placeholder.com/300x320?text=No+Image'}" 
+                                 alt="${book.name}" 
+                                 class="book-card-dark-img"
+                                 onerror="this.src='https://via.placeholder.com/300x320?text=No+Image'">
+                            <span class="book-card-dark-status ${statusClass}">${statusText}</span>
+                            <div class="book-card-dark-overlay">
+                                <a href="detail.html?id=${book.id}" class="overlay-btn">
+                                    <i class="fas fa-book-open"></i> Xem & Đọc Sách
+                                </a>
+                            </div>
+                        </div>
+                        <div class="book-card-dark-body">
+                            <span class="book-card-dark-category">${book.category || 'Tổng Hợp'}</span>
+                            <h3 class="book-card-dark-title">${book.name}</h3>
+                            <p class="book-card-dark-author">
+                                <i class="fas fa-user"></i> ${book.author || 'Chưa rõ'}
+                            </p>
+                            <p class="book-card-dark-id">Mã: ${book.id}</p>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            }
+
+            // Initial render
+            renderBooks();
+
+            // Search
+            const searchInput = document.getElementById('searchInput');
+            let searchTimeout;
+            searchInput.addEventListener('input', function () {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    searchQuery = this.value.trim();
+                    renderBooks();
+                }, 300);
+            });
+
+            // Filter buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentFilter = this.dataset.filter;
+                    renderBooks();
+                });
+            });
+
+            // View toggle (visual only for now)
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    // Could implement list view here
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
